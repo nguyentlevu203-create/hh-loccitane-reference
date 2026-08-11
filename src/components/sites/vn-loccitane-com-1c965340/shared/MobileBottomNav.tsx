@@ -11,7 +11,7 @@ const items = [
   { key: "cart", label: "Giỏ hàng", href: "#", Icon: CartIcon },
 ] as const;
 
-export function MobileBottomNav() {
+export function MobileBottomNav({ cartCount = 0 }: { cartCount?: number }) {
   const pathname = usePathname();
 
   return (
@@ -34,7 +34,7 @@ export function MobileBottomNav() {
               <Icon className="size-5" />
               {key === "cart" && (
                 <span className="absolute -right-2 -top-1.5 flex size-3.5 items-center justify-center rounded-full bg-primary text-[8px] text-foreground">
-                  0
+                  {cartCount}
                 </span>
               )}
             </span>

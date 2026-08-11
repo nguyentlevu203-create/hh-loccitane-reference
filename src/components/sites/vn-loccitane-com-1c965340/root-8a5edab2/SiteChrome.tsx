@@ -40,12 +40,16 @@ interface SiteHeaderProps {
   onMenuClick: () => void;
   offsetTop?: number;
   forceScrolled?: boolean;
+  wishlistCount?: number;
+  cartCount?: number;
 }
 
 export function SiteHeader({
   onMenuClick,
   offsetTop = 0,
   forceScrolled = false,
+  wishlistCount = 0,
+  cartCount = 0,
 }: SiteHeaderProps) {
   const [scrolledState, setScrolledState] = useState(false);
   const scrolled = forceScrolled || scrolledState;
@@ -119,7 +123,7 @@ export function SiteHeader({
           <button type="button" aria-label="Yêu thích" className="relative">
             <HeartIcon className="size-[22px]" />
             <span className="absolute -right-1.5 -top-1.5 flex size-4 items-center justify-center rounded-full bg-primary text-[10px] text-foreground">
-              0
+              {wishlistCount}
             </span>
           </button>
           <button
@@ -129,7 +133,7 @@ export function SiteHeader({
           >
             <CartIcon className="size-[22px]" />
             <span className="absolute -right-1.5 -top-1.5 flex size-4 items-center justify-center rounded-full bg-primary text-[10px] text-foreground">
-              0
+              {cartCount}
             </span>
           </button>
         </div>
@@ -163,7 +167,7 @@ export function SiteHeader({
             <button type="button" aria-label="Yêu thích" className="relative">
               <HeartIcon className="size-5" />
               <span className="absolute -right-1.5 -top-1.5 flex size-4 items-center justify-center rounded-full bg-primary text-[10px] text-foreground">
-                0
+                {wishlistCount}
               </span>
             </button>
           </div>
@@ -194,9 +198,13 @@ export function SiteHeader({
 export default function SiteChrome({
   onMenuClick,
   forceScrolled = false,
+  wishlistCount = 0,
+  cartCount = 0,
 }: {
   onMenuClick: () => void;
   forceScrolled?: boolean;
+  wishlistCount?: number;
+  cartCount?: number;
 }) {
   const [announcementVisible, setAnnouncementVisible] = useState(true);
 
@@ -209,6 +217,8 @@ export default function SiteChrome({
         onMenuClick={onMenuClick}
         offsetTop={announcementVisible ? 32 : 0}
         forceScrolled={forceScrolled}
+        wishlistCount={wishlistCount}
+        cartCount={cartCount}
       />
     </>
   );

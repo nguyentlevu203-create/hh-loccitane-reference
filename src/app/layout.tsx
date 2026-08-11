@@ -1,10 +1,15 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Cormorant_Garamond, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+// vn.loccitane.com uses a proprietary licensed serif ("SVN-LOccitane Serif").
+// Cormorant Garamond is the closest freely-licensed substitute: a refined,
+// French-inspired display serif with matching proportions/weights.
+const cormorant = Cormorant_Garamond({
+  variable: "--font-cormorant",
+  subsets: ["latin", "vietnamese"],
+  weight: ["400", "500", "600", "700"],
+  style: ["normal", "italic"],
 });
 
 const geistMono = Geist_Mono({
@@ -13,8 +18,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Website Clone",
-  description: "Pixel-perfect website clone",
+  title: "L'OCCITANE Việt Nam – Mỹ Phẩm thiên nhiên, cao cấp từ Pháp.",
+  description:
+    "L'Occitane là hãng mỹ phẩm được vinh danh nhờ nguyên liệu tự nhiên. Cung cấp các sản phẩm chăm sóc toàn diện da toàn diện từ body, da mặt, da đầu,...",
 };
 
 export default function RootLayout({
@@ -24,8 +30,8 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      lang="vi"
+      className={`${cormorant.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>

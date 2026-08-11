@@ -39,19 +39,26 @@ export function AnnouncementBar({
 interface SiteHeaderProps {
   onMenuClick: () => void;
   offsetTop?: number;
+  forceScrolled?: boolean;
 }
 
-export function SiteHeader({ onMenuClick, offsetTop = 0 }: SiteHeaderProps) {
-  const [scrolled, setScrolled] = useState(false);
+export function SiteHeader({
+  onMenuClick,
+  offsetTop = 0,
+  forceScrolled = false,
+}: SiteHeaderProps) {
+  const [scrolledState, setScrolledState] = useState(false);
+  const scrolled = forceScrolled || scrolledState;
 
   useEffect(() => {
+    if (forceScrolled) return;
     const handleScroll = () => {
-      setScrolled(window.scrollY >= 90);
+      setScrolledState(window.scrollY >= 90);
     };
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [forceScrolled]);
 
   const iconColorClass = scrolled ? "text-foreground" : "text-white";
 
@@ -186,8 +193,10 @@ export function SiteHeader({ onMenuClick, offsetTop = 0 }: SiteHeaderProps) {
 
 export default function SiteChrome({
   onMenuClick,
+  forceScrolled = false,
 }: {
   onMenuClick: () => void;
+  forceScrolled?: boolean;
 }) {
   const [announcementVisible, setAnnouncementVisible] = useState(true);
 
@@ -199,6 +208,7 @@ export default function SiteChrome({
       <SiteHeader
         onMenuClick={onMenuClick}
         offsetTop={announcementVisible ? 32 : 0}
+        forceScrolled={forceScrolled}
       />
     </>
   );

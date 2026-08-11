@@ -173,6 +173,56 @@ export function TiktokIcon(props: IconProps) {
   );
 }
 
+export function FilterIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" {...props}>
+      <line x1="3" y1="6" x2="21" y2="6" />
+      <line x1="3" y1="12" x2="21" y2="12" />
+      <line x1="3" y1="18" x2="21" y2="18" />
+      <circle cx="8" cy="6" r="1.75" fill="currentColor" stroke="none" />
+      <circle cx="16" cy="12" r="1.75" fill="currentColor" stroke="none" />
+      <circle cx="10" cy="18" r="1.75" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+export function HomeIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <path d="M3 11.5 12 4l9 7.5" />
+      <path d="M5.5 9.5V20h13V9.5" />
+      <path d="M10 20v-6h4v6" />
+    </svg>
+  );
+}
+
+export function ConsultIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <path d="M12 3a7 7 0 0 0-7 7v3.5a1.5 1.5 0 0 0 1.5 1.5H8v-6H6.5a5.5 5.5 0 0 1 11 0H16v6h1.5A1.5 1.5 0 0 0 19 13.5V10a7 7 0 0 0-7-7Z" />
+      <path d="M8 15v1a2 2 0 0 0 2 2h1" />
+      <circle cx="13" cy="18" r="1.25" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+export function PlusIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" {...props}>
+      <line x1="12" y1="5" x2="12" y2="19" />
+      <line x1="5" y1="12" x2="19" y2="12" />
+    </svg>
+  );
+}
+
+export function MinusIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" {...props}>
+      <line x1="5" y1="12" x2="19" y2="12" />
+    </svg>
+  );
+}
+
 export function EmailIcon(props: IconProps) {
   return (
     <svg viewBox="0 0 512 512" fill="currentColor" {...props}>

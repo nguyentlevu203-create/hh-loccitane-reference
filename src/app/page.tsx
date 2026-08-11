@@ -16,6 +16,7 @@ import {
   SiteFooter,
   FloatingActions,
 } from "@/components/sites/vn-loccitane-com-1c965340/root-8a5edab2/FooterAndFloating";
+import { MobileBottomNav } from "@/components/sites/vn-loccitane-com-1c965340/shared/MobileBottomNav";
 
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -35,6 +36,7 @@ export default function Home() {
       </main>
       <SiteFooter />
       <FloatingActions />
+      <MobileBottomNav />
     </>
   );
 }

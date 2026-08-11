@@ -259,7 +259,7 @@ export function SiteFooter() {
 
 export function FloatingActions() {
   return (
-    <div className="fixed right-6 bottom-6 z-50 flex flex-col items-center gap-3">
+    <div className="fixed right-6 bottom-[70px] z-50 flex flex-col items-center gap-3 lg:bottom-6">
       <button
         type="button"
         aria-label="Chat Zalo"

@@ -1,3 +1,5 @@
+import type { Product } from "../collections-all-acd0b3f1/types";
+
 export interface ProductVariant {
   id: string;
   value: string;
@@ -6,6 +8,17 @@ export interface ProductVariant {
   available: boolean;
   image?: string;
 }
+
+export type ProductCategory =
+  | "body-care"
+  | "hand-care"
+  | "face-care"
+  | "hair-care"
+  | "fragrance"
+  | "mens"
+  | "gifts"
+  | "refills"
+  | "other";
 
 export interface ProductPromoCode {
   label: string;
@@ -51,4 +64,10 @@ export interface ProductDetail {
     items: never[];
   };
   shareUrl: string;
+  /** Coarse taxonomy label for QA sampling and inventory reporting — not a rendered UI field. */
+  category?: ProductCategory;
+  /** Real, page-observed companion products only (site-wide "Gợi ý" rail is empty) — never fabricated. */
+  recommendations?: Product[];
+  /** Field names that could not be reliably obtained from the public source, for QA transparency. */
+  missingFields?: string[];
 }

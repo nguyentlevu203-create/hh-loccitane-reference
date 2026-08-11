@@ -1,17 +1,16 @@
-import type { ProductDetail } from "./types";
-import type { Product } from "../collections-all-acd0b3f1/types";
+import type { ProductDetail } from "@/components/sites/vn-loccitane-com-1c965340/products-dau-tam-hanh-nhan-l-occitane-almond-shower-oil-250ml-500ml-167aa139/types";
 
 const IMAGES_BASE =
   "/sites/vn-loccitane-com-1c965340/products-dau-tam-hanh-nhan-l-occitane-almond-shower-oil-250ml-500ml-167aa139/images";
-const ROOT_IMAGES_BASE =
-  "/sites/vn-loccitane-com-1c965340/root-8a5edab2/images";
+const ROOT_IMAGES_BASE = "/sites/vn-loccitane-com-1c965340/root-8a5edab2/images";
 
 // Source: https://vn.loccitane.com/products/dau-tam-hanh-nhan-l-occitane-almond-shower-oil-250ml-500ml
 // See docs/research/vn-loccitane-com-1c965340/products-dau-tam-hanh-nhan-l-occitane-almond-shower-oil-250ml-500ml-167aa139/
-export const almondShowerOil: ProductDetail = {
+const product: ProductDetail = {
   slug: "dau-tam-hanh-nhan-l-occitane-almond-shower-oil-250ml-500ml",
   sku: "29HD250A26",
   name: "[Phiên Bản Mới] Dầu Tắm Hạnh Nhân",
+  category: "body-care",
   breadcrumb: [
     { label: "Trang chủ", href: "/" },
     {
@@ -74,27 +73,28 @@ export const almondShowerOil: ProductDetail = {
     },
   ],
   reviews: { summary: { average: 0, count: 0 }, items: [] },
+  // "Gợi ý" (recommendations) is disabled store-wide on the live site
+  // (checkproductrelated: "false"). Seeded here with the two real companion
+  // products this product's own usage instructions (section 5 above) name by
+  // name, using their real SKUs/prices confirmed live.
+  recommendations: [
+    {
+      slug: "dau-duong-the-hanh-nhan-almond-supple-skin-oil",
+      sku: "29HC100A26",
+      name: "[Phiên Bản Mới] Dầu Dưỡng Thể Hạnh Nhân",
+      image: `${ROOT_IMAGES_BASE}/product-almond-body-oil.png`,
+      price: "1,790,000₫",
+    },
+    {
+      slug: "kem-duong-am-san-chac-da-hanh-nhan-br-almond-milk-concentrate",
+      sku: "29CC200A26",
+      name: "[Phiên Bản Mới] Kem Dưỡng Ẩm Săn Chắc Da Hạnh Nhân",
+      image: `${ROOT_IMAGES_BASE}/product-almond-milk-concentrate.png`,
+      price: "1,990,000₫",
+    },
+  ],
   shareUrl:
     "https://vn.loccitane.com/products/dau-tam-hanh-nhan-l-occitane-almond-shower-oil-250ml-500ml",
 };
 
-// "Gợi ý" (recommendations) is disabled store-wide on the live site
-// (checkproductrelated: "false" — see BEHAVIORS.md). Seeded here with the two
-// real companion products this product's own usage instructions (section 5
-// above) name by name, using their real SKUs/prices confirmed live.
-export const recommendedProducts: Product[] = [
-  {
-    slug: "dau-duong-the-hanh-nhan-almond-supple-skin-oil",
-    sku: "29HC100A26",
-    name: "[Phiên Bản Mới] Dầu Dưỡng Thể Hạnh Nhân",
-    image: `${ROOT_IMAGES_BASE}/product-almond-body-oil.png`,
-    price: "1,790,000₫",
-  },
-  {
-    slug: "kem-duong-am-san-chac-da-hanh-nhan-br-almond-milk-concentrate",
-    sku: "29CC200A26",
-    name: "[Phiên Bản Mới] Kem Dưỡng Ẩm Săn Chắc Da Hạnh Nhân",
-    image: `${ROOT_IMAGES_BASE}/product-almond-milk-concentrate.png`,
-    price: "1,990,000₫",
-  },
-];
+export default product;

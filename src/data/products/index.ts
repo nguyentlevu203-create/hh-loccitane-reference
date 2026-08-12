@@ -1,4 +1,5 @@
 import type { ProductDetail } from "@/components/sites/vn-loccitane-com-1c965340/products-dau-tam-hanh-nhan-l-occitane-almond-shower-oil-250ml-500ml-167aa139/types";
+import type { Product } from "@/components/sites/vn-loccitane-com-1c965340/collections-all-acd0b3f1/types";
 
 import p_bo_cham_soc_co_the_hanh_nhan_danh_cho_khach_tham_gia_chuong_trinh_big_little_things from "./records/bo-cham-soc-co-the-hanh-nhan-danh-cho-khach-tham-gia-chuong-trinh-big-little-things";
 import p_bo_cham_soc_da_mat_danh_cho_khach_tham_gia_chuong_trinh_big_little_things from "./records/bo-cham-soc-da-mat-danh-cho-khach-tham-gia-chuong-trinh-big-little-things";
@@ -105,4 +106,25 @@ export function getProductDetail(slug: string): ProductDetail | undefined {
 
 export function getAllProductSlugs(): string[] {
   return Object.keys(productCatalog);
+}
+
+/** Adapts a full PDP record down to the lightweight grid-card shape used by collection pages. */
+export function toGridProduct(product: ProductDetail): Product {
+  return {
+    slug: product.slug,
+    sku: product.sku,
+    name: product.name,
+    image: product.images[0] ?? "",
+    volume: product.variants[0]?.value,
+    price: product.price,
+    originalPrice: product.originalPrice,
+  };
+}
+
+/** Resolves a list of real product slugs (as referenced by a collection) to grid-card products, silently dropping any slug not present in the 44-product catalogue rather than fabricating one. */
+export function getGridProducts(slugs: string[]): Product[] {
+  return slugs
+    .map((slug) => productCatalog[slug])
+    .filter((p): p is ProductDetail => Boolean(p))
+    .map(toGridProduct);
 }

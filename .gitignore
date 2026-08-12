@@ -47,3 +47,6 @@ next-env.d.ts
 
 # Local temp files
 temp/
+
+# Reproducible scraper caches (regenerate via the corresponding scripts/*.mjs)
+scripts/.cache/

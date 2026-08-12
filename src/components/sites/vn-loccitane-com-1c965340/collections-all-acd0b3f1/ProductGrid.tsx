@@ -4,13 +4,21 @@ import { useState } from "react";
 import { CollectionToolbar } from "./CollectionToolbar";
 import { ProductCard } from "./ProductCard";
 import { QuickViewModal } from "./QuickViewModal";
-import { products } from "./products";
 import type { Product } from "./types";
 
 const PAGE_SIZE = 20;
-const MOCK_TOTAL = 304;
 
-export function ProductGrid({ onOpenFilter }: { onOpenFilter: () => void }) {
+export function ProductGrid({
+  products,
+  total,
+  showToolbar = true,
+  onOpenFilter,
+}: {
+  products: Product[];
+  total: number;
+  showToolbar?: boolean;
+  onOpenFilter: () => void;
+}) {
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
 
@@ -19,21 +27,29 @@ export function ProductGrid({ onOpenFilter }: { onOpenFilter: () => void }) {
 
   return (
     <section>
-      <CollectionToolbar
-        shown={visibleProducts.length}
-        total={MOCK_TOTAL}
-        onOpenFilter={onOpenFilter}
-      />
+      {showToolbar && (
+        <CollectionToolbar
+          shown={visibleProducts.length}
+          total={total}
+          onOpenFilter={onOpenFilter}
+        />
+      )}
 
-      <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-        {visibleProducts.map((product) => (
-          <ProductCard
-            key={product.slug}
-            product={product}
-            onQuickView={setQuickViewProduct}
-          />
-        ))}
-      </div>
+      {products.length === 0 ? (
+        <p className="mt-10 text-center text-sm text-muted-foreground">
+          Hiện chưa có sản phẩm trong bộ sưu tập này.
+        </p>
+      ) : (
+        <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+          {visibleProducts.map((product) => (
+            <ProductCard
+              key={product.slug}
+              product={product}
+              onQuickView={setQuickViewProduct}
+            />
+          ))}
+        </div>
+      )}
 
       {hasMore && (
         <div className="mt-8 flex justify-center">

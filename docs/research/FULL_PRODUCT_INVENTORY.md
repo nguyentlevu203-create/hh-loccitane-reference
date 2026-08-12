@@ -22,7 +22,9 @@ Source: `https://vn.loccitane.com/sitemap_products_1.xml`, fetched live 2026-08-
 
 ## Modeled products (full detail — 43)
 
-Extraction status: **pending live scrape** for detail fields (variants/gallery/description/promo) — SKU/name/volume/price/category below are already-verified real values reused from `/collections/all`'s `products.ts` (the 40) or from live sampling in `PDP_TEMPLATE_MATRIX.md` (the 3 supplemental). This table is finalized after the worktree scraping pass completes (see Phase 4 plan step 4); the authoritative per-product detail then lives in `src/data/products/records/<slug>.ts`, this table stays a summary index.
+Extraction status: **complete** — all 43 products scraped live via `scripts/scrape-products-phase4.mjs` (2026-08-12), which reads each PDP's server-rendered `window.wd.productjson` (name/sku/price/variants/images/description) and real breadcrumb DOM markup directly from the static HTML response (no browser JS execution needed — this data is present pre-hydration). SKU/name/volume/price/category in the table below reflect the values at scrape time; the authoritative per-product detail lives in `src/data/products/records/<slug>.ts`, this table stays a summary index.
+
+`promoCodes`, `giftPanel`, and `recommendations` are **not** included — those are client-side/AJAX-injected on the live site and were only ever captured by hand (via `browser_evaluate`) for the one reference product. Each of the 43 records flags this honestly via `missingFields: ["promoCodes", "giftPanel", "recommendations"]` rather than fabricating or copying the reference product's values across unrelated products.
 
 | # | Slug | SKU | Name | Volume | Price | Category | Source |
 |---|---|---|---|---|---|---|---|

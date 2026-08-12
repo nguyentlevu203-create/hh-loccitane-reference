@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 import {
   MenuIcon,
   SearchIcon,
@@ -11,6 +12,12 @@ import {
   CartIcon,
   CloseIcon,
 } from "@/components/sites/vn-loccitane-com-1c965340/shared/icons";
+import { CartDrawer } from "@/components/sites/vn-loccitane-com-1c965340/shared/CartDrawer";
+import { SearchOverlay } from "@/components/sites/vn-loccitane-com-1c965340/shared/SearchOverlay";
+import { QuickViewModal } from "@/components/sites/vn-loccitane-com-1c965340/collections-all-acd0b3f1/QuickViewModal";
+import { useCart } from "@/lib/commerce/CartContext";
+import { useWishlist } from "@/lib/commerce/WishlistContext";
+import { useSearchOverlay } from "@/lib/commerce/SearchContext";
 
 const LOGO_SRC = "/sites/vn-loccitane-com-1c965340/shared/images/logo.png";
 
@@ -40,19 +47,18 @@ interface SiteHeaderProps {
   onMenuClick: () => void;
   offsetTop?: number;
   forceScrolled?: boolean;
-  wishlistCount?: number;
-  cartCount?: number;
 }
 
 export function SiteHeader({
   onMenuClick,
   offsetTop = 0,
   forceScrolled = false,
-  wishlistCount = 0,
-  cartCount = 0,
 }: SiteHeaderProps) {
   const [scrolledState, setScrolledState] = useState(false);
   const scrolled = forceScrolled || scrolledState;
+  const cart = useCart();
+  const wishlist = useWishlist();
+  const searchOverlay = useSearchOverlay();
 
   useEffect(() => {
     if (forceScrolled) return;
@@ -86,17 +92,20 @@ export function SiteHeader({
             <MenuIcon className="size-[22px]" />
           </button>
           <div className="relative flex w-[280px] items-center">
-            <input
-              type="text"
-              placeholder="Tìm kiếm"
-              className={`h-9 w-full rounded-full border bg-transparent pl-4 pr-9 text-sm placeholder:text-current focus:outline-none ${
-                scrolled
-                  ? "border-foreground/30 text-foreground"
-                  : "border-white/40 text-white"
-              }`}
-            />
             <button
               type="button"
+              onClick={searchOverlay.open}
+              className={`h-9 w-full rounded-full border bg-transparent pl-4 pr-9 text-left text-sm ${
+                scrolled
+                  ? "border-foreground/30 text-foreground/60"
+                  : "border-white/40 text-white/70"
+              }`}
+            >
+              Tìm kiếm
+            </button>
+            <button
+              type="button"
+              onClick={searchOverlay.open}
               aria-label="Tìm kiếm"
               className={`absolute right-3 flex items-center justify-center ${iconColorClass}`}
             >
@@ -120,20 +129,21 @@ export function SiteHeader({
           <a href="#" aria-label="Cửa hàng gần bạn">
             <LocationIcon className="size-[22px]" />
           </a>
-          <button type="button" aria-label="Yêu thích" className="relative">
-            <HeartIcon className="size-[22px]" />
+          <Link href="/wishlist" aria-label="Yêu thích" className="relative">
+            <HeartIcon className={cn("size-[22px]", wishlist.count > 0 && "text-destructive")} />
             <span className="absolute -right-1.5 -top-1.5 flex size-4 items-center justify-center rounded-full bg-primary text-[10px] text-foreground">
-              {wishlistCount}
+              {wishlist.count}
             </span>
-          </button>
+          </Link>
           <button
             type="button"
             aria-label="Giỏ hàng"
+            onClick={cart.open}
             className="relative hidden sm:flex"
           >
             <CartIcon className="size-[22px]" />
             <span className="absolute -right-1.5 -top-1.5 flex size-4 items-center justify-center rounded-full bg-primary text-[10px] text-foreground">
-              {cartCount}
+              {cart.count}
             </span>
           </button>
         </div>
@@ -164,26 +174,29 @@ export function SiteHeader({
             <a href="#" aria-label="Tài khoản">
               <AccountIcon className="size-5" />
             </a>
-            <button type="button" aria-label="Yêu thích" className="relative">
-              <HeartIcon className="size-5" />
+            <Link href="/wishlist" aria-label="Yêu thích" className="relative">
+              <HeartIcon className={cn("size-5", wishlist.count > 0 && "text-destructive")} />
               <span className="absolute -right-1.5 -top-1.5 flex size-4 items-center justify-center rounded-full bg-primary text-[10px] text-foreground">
-                {wishlistCount}
+                {wishlist.count}
               </span>
-            </button>
+            </Link>
           </div>
         </div>
         <div className="relative flex w-full items-center">
-          <input
-            type="text"
-            placeholder="Tìm kiếm"
-            className={`h-9 w-full rounded-full border bg-transparent pl-4 pr-9 text-sm placeholder:text-current focus:outline-none ${
-              scrolled
-                ? "border-foreground/30 text-foreground"
-                : "border-white/40 text-white"
-            }`}
-          />
           <button
             type="button"
+            onClick={searchOverlay.open}
+            className={`h-9 w-full rounded-full border bg-transparent pl-4 pr-9 text-left text-sm ${
+              scrolled
+                ? "border-foreground/30 text-foreground/60"
+                : "border-white/40 text-white/70"
+            }`}
+          >
+            Tìm kiếm
+          </button>
+          <button
+            type="button"
+            onClick={searchOverlay.open}
             aria-label="Tìm kiếm"
             className={`absolute right-3 flex items-center justify-center ${iconColorClass}`}
           >
@@ -198,13 +211,9 @@ export function SiteHeader({
 export default function SiteChrome({
   onMenuClick,
   forceScrolled = false,
-  wishlistCount = 0,
-  cartCount = 0,
 }: {
   onMenuClick: () => void;
   forceScrolled?: boolean;
-  wishlistCount?: number;
-  cartCount?: number;
 }) {
   const [announcementVisible, setAnnouncementVisible] = useState(true);
 
@@ -217,9 +226,10 @@ export default function SiteChrome({
         onMenuClick={onMenuClick}
         offsetTop={announcementVisible ? 32 : 0}
         forceScrolled={forceScrolled}
-        wishlistCount={wishlistCount}
-        cartCount={cartCount}
       />
+      <CartDrawer />
+      <SearchOverlay />
+      <QuickViewModal />
     </>
   );
 }

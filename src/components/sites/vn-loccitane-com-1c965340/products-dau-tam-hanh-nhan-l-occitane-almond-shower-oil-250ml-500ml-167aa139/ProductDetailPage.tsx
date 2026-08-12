@@ -9,6 +9,8 @@ import {
 } from "@/components/sites/vn-loccitane-com-1c965340/root-8a5edab2/FooterAndFloating";
 import FeedbackStrip from "@/components/sites/vn-loccitane-com-1c965340/root-8a5edab2/FeedbackStrip";
 import { MobileBottomNav } from "@/components/sites/vn-loccitane-com-1c965340/shared/MobileBottomNav";
+import { useCart } from "@/lib/commerce/CartContext";
+import { useWishlist } from "@/lib/commerce/WishlistContext";
 import type { Product } from "../collections-all-acd0b3f1/types";
 import { ProductBreadcrumbs } from "./ProductBreadcrumbs";
 import { ProductGallery } from "./ProductGallery";
@@ -26,13 +28,14 @@ export function ProductDetailPage({
   recommendations: Product[];
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [wishlisted, setWishlisted] = useState(false);
   const [qty, setQty] = useState(1);
   const [selectedVariant, setSelectedVariant] = useState(
     product.variants[0]?.value ?? ""
   );
-  const [cartCount, setCartCount] = useState(0);
   const [toast, setToast] = useState<string | null>(null);
+  const cart = useCart();
+  const wishlist = useWishlist();
+  const wishlisted = wishlist.isWishlisted(product.slug);
 
   useEffect(() => {
     if (!toast) return;
@@ -40,27 +43,49 @@ export function ProductDetailPage({
     return () => clearTimeout(timer);
   }, [toast]);
 
-  // Add to Cart / Buy Now are local mock actions — the live site navigates to
-  // a real /cart page, which is out of scope (private checkout system).
-  // See BEHAVIORS.md for the documented scope decision.
+  const activeVariant = product.variants.find((v) => v.value === selectedVariant);
+
+  // Add to Cart / Buy Now push into the shared, localStorage-persisted cart
+  // (src/lib/commerce/CartContext.tsx) rather than a real checkout backend —
+  // the live site's actual checkout/order system is out of scope (private).
+  const addToCart = () => {
+    cart.addItem(
+      {
+        slug: product.slug,
+        sku: activeVariant?.sku ?? product.sku,
+        name: product.name,
+        image: product.images[0] ?? "",
+        price: activeVariant?.price ?? product.price,
+        volume: activeVariant?.value,
+      },
+      qty,
+    );
+  };
+
   const handleAddToCart = () => {
-    setCartCount((c) => c + qty);
+    addToCart();
     setToast("Đã thêm vào giỏ hàng");
   };
 
   const handleBuyNow = () => {
-    setCartCount((c) => c + qty);
-    setToast("Đã thêm vào giỏ hàng");
+    addToCart();
+    cart.open();
+  };
+
+  const toggleWishlist = () => {
+    wishlist.toggle({
+      slug: product.slug,
+      sku: product.sku,
+      name: product.name,
+      image: product.images[0] ?? "",
+      price: product.price,
+      volume: product.variants[0]?.value,
+    });
   };
 
   return (
     <>
-      <SiteChrome
-        onMenuClick={() => setMenuOpen(true)}
-        forceScrolled
-        wishlistCount={wishlisted ? 1 : 0}
-        cartCount={cartCount}
-      />
+      <SiteChrome onMenuClick={() => setMenuOpen(true)} forceScrolled />
       <OffCanvasNav open={menuOpen} onClose={() => setMenuOpen(false)} />
 
       <main className="mx-auto max-w-[1200px] px-4 pt-[104px] pb-16 lg:px-10">
@@ -72,7 +97,7 @@ export function ProductDetailPage({
             giftPanel={product.giftPanel}
             productLabel={product.variants.find((v) => v.value === selectedVariant)?.value}
             wishlisted={wishlisted}
-            onToggleWishlist={() => setWishlisted((v) => !v)}
+            onToggleWishlist={toggleWishlist}
           />
           <ProductInfo
             product={product}
@@ -101,7 +126,7 @@ export function ProductDetailPage({
       <FeedbackStrip />
       <SiteFooter />
       <FloatingActions />
-      <MobileBottomNav cartCount={cartCount} />
+      <MobileBottomNav />
 
       {toast && (
         <div className="fixed bottom-20 left-1/2 z-[130] -translate-x-1/2 rounded-full bg-foreground px-5 py-2.5 text-sm text-white shadow-lg lg:bottom-8">

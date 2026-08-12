@@ -42,8 +42,8 @@ export function ProductGallery({
         >
           <HeartIcon
             className={cn(
-              "size-5 text-foreground",
-              wishlisted && "fill-current"
+              "size-5",
+              wishlisted ? "text-destructive" : "text-foreground"
             )}
           />
         </button>

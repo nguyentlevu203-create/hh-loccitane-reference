@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { HeartIcon } from "@/components/sites/vn-loccitane-com-1c965340/shared/icons";
+import { useWishlist } from "@/lib/commerce/WishlistContext";
 import type { Product } from "./types";
 
 const QUICK_VIEW_ICON =
@@ -23,7 +24,8 @@ export function ProductCard({
   product: Product;
   onQuickView: (product: Product) => void;
 }) {
-  const [wishlisted, setWishlisted] = useState(false);
+  const wishlist = useWishlist();
+  const wishlisted = wishlist.isWishlisted(product.slug);
   const onSale = Boolean(product.originalPrice);
 
   return (
@@ -34,22 +36,33 @@ export function ProductCard({
             -{discountPercent(product.price, product.originalPrice!)}%
           </span>
         )}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={product.image}
-          alt={product.name}
-          className="h-full w-full object-contain"
-        />
+        <Link href={`/products/${product.slug}`} className="block h-full w-full">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={product.image}
+            alt={product.name}
+            className="h-full w-full object-contain"
+          />
+        </Link>
         <button
           type="button"
           aria-label="Yêu thích"
-          onClick={() => setWishlisted((v) => !v)}
+          onClick={() =>
+            wishlist.toggle({
+              slug: product.slug,
+              sku: product.sku,
+              name: product.name,
+              image: product.image,
+              price: product.price,
+              volume: product.volume,
+            })
+          }
           className="absolute top-2 right-2 z-10"
         >
           <HeartIcon
             className={cn(
-              "size-[22px] text-foreground",
-              wishlisted && "fill-current"
+              "size-[22px]",
+              wishlisted ? "text-destructive" : "text-foreground"
             )}
           />
         </button>
@@ -63,7 +76,7 @@ export function ProductCard({
           <img src={QUICK_VIEW_ICON} alt="" className="h-8 w-8" />
         </button>
       </div>
-      <div className="px-3 pt-3">
+      <Link href={`/products/${product.slug}`} className="block px-3 pt-3">
         <p className="line-clamp-2 text-sm leading-[19.6px] text-foreground">
           {product.name}
         </p>
@@ -84,7 +97,7 @@ export function ProductCard({
             <p className="text-sm text-foreground">{product.price}</p>
           )}
         </div>
-      </div>
+      </Link>
     </div>
   );
 }

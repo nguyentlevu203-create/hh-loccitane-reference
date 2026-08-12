@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { CollectionToolbar } from "./CollectionToolbar";
 import { ProductCard } from "./ProductCard";
-import { QuickViewModal } from "./QuickViewModal";
+import { useQuickView } from "@/lib/commerce/QuickViewContext";
 import type { Product } from "./types";
 
 const PAGE_SIZE = 20;
@@ -12,15 +12,17 @@ export function ProductGrid({
   products,
   total,
   showToolbar = true,
+  emptyMessage = "Hiện chưa có sản phẩm trong bộ sưu tập này.",
   onOpenFilter,
 }: {
   products: Product[];
   total: number;
   showToolbar?: boolean;
+  emptyMessage?: string;
   onOpenFilter: () => void;
 }) {
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
-  const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
+  const quickView = useQuickView();
 
   const visibleProducts = products.slice(0, visibleCount);
   const hasMore = visibleCount < products.length;
@@ -36,16 +38,14 @@ export function ProductGrid({
       )}
 
       {products.length === 0 ? (
-        <p className="mt-10 text-center text-sm text-muted-foreground">
-          Hiện chưa có sản phẩm trong bộ sưu tập này.
-        </p>
+        <p className="mt-10 text-center text-sm text-muted-foreground">{emptyMessage}</p>
       ) : (
         <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           {visibleProducts.map((product) => (
             <ProductCard
               key={product.slug}
               product={product}
-              onQuickView={setQuickViewProduct}
+              onQuickView={quickView.open}
             />
           ))}
         </div>
@@ -62,8 +62,6 @@ export function ProductGrid({
           </button>
         </div>
       )}
-
-      <QuickViewModal product={quickViewProduct} onClose={() => setQuickViewProduct(null)} />
     </section>
   );
 }

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Geist_Mono } from "next/font/google";
+import { CommerceProvider } from "@/lib/commerce/CommerceProvider";
 import "./globals.css";
 
 // vn.loccitane.com uses a proprietary licensed serif ("SVN-LOccitane Serif").
@@ -33,7 +34,9 @@ export default function RootLayout({
       lang="vi"
       className={`${cormorant.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <CommerceProvider>{children}</CommerceProvider>
+      </body>
     </html>
   );
 }

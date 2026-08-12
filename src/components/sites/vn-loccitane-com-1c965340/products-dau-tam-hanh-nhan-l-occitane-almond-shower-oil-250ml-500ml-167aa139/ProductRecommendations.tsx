@@ -1,14 +1,11 @@
 "use client";
 
-import { useState } from "react";
 import { ProductCard } from "../collections-all-acd0b3f1/ProductCard";
-import { QuickViewModal } from "../collections-all-acd0b3f1/QuickViewModal";
+import { useQuickView } from "@/lib/commerce/QuickViewContext";
 import type { Product } from "../collections-all-acd0b3f1/types";
 
 export function ProductRecommendations({ products }: { products: Product[] }) {
-  const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(
-    null
-  );
+  const quickView = useQuickView();
 
   if (products.length === 0) return null;
 
@@ -26,15 +23,10 @@ export function ProductRecommendations({ products }: { products: Product[] }) {
           <ProductCard
             key={product.slug}
             product={product}
-            onQuickView={setQuickViewProduct}
+            onQuickView={quickView.open}
           />
         ))}
       </div>
-
-      <QuickViewModal
-        product={quickViewProduct}
-        onClose={() => setQuickViewProduct(null)}
-      />
     </div>
   );
 }

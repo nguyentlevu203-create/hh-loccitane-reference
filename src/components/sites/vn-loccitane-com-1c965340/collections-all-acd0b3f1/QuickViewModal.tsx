@@ -5,21 +5,38 @@ import { cn } from "@/lib/utils";
 import {
   CloseNavIcon,
   CartIcon,
+  HeartIcon,
   PlusIcon,
   MinusIcon,
 } from "@/components/sites/vn-loccitane-com-1c965340/shared/icons";
+import { useCart } from "@/lib/commerce/CartContext";
+import { useWishlist } from "@/lib/commerce/WishlistContext";
+import { useQuickView } from "@/lib/commerce/QuickViewContext";
 import type { Product } from "./types";
 
-export function QuickViewModal({
-  product,
-  onClose,
-}: {
-  product: Product | null;
-  onClose: () => void;
-}) {
+// Keyed by product.slug from the parent below, so qty/added reset for free on remount whenever a
+// different product opens — no effect needed to sync state to the changing `product` prop.
+function QuickViewModalContent({ product, onClose }: { product: Product; onClose: () => void }) {
   const [qty, setQty] = useState(1);
+  const [added, setAdded] = useState(false);
+  const cart = useCart();
+  const wishlist = useWishlist();
+  const wishlisted = wishlist.isWishlisted(product.slug);
 
-  if (!product) return null;
+  const handleAddToCart = () => {
+    cart.addItem(
+      {
+        slug: product.slug,
+        sku: product.sku,
+        name: product.name,
+        image: product.image,
+        price: product.price,
+        volume: product.volume,
+      },
+      qty,
+    );
+    setAdded(true);
+  };
 
   return (
     <>
@@ -41,6 +58,24 @@ export function QuickViewModal({
             className="absolute top-4 right-4"
           >
             <CloseNavIcon className="size-5" />
+          </button>
+
+          <button
+            type="button"
+            onClick={() =>
+              wishlist.toggle({
+                slug: product.slug,
+                sku: product.sku,
+                name: product.name,
+                image: product.image,
+                price: product.price,
+                volume: product.volume,
+              })
+            }
+            aria-label="Yêu thích"
+            className="absolute top-4 right-14"
+          >
+            <HeartIcon className={cn("size-5", wishlisted ? "text-destructive" : "text-foreground")} />
           </button>
 
           <div className="mx-auto w-full max-w-[280px] shrink-0 sm:mx-0">
@@ -96,12 +131,11 @@ export function QuickViewModal({
 
             <button
               type="button"
-              className={cn(
-                "mt-4 flex items-center justify-center gap-2 rounded-[5px] bg-foreground py-3 text-sm font-medium text-white"
-              )}
+              onClick={handleAddToCart}
+              className="mt-4 flex items-center justify-center gap-2 rounded-[5px] bg-foreground py-3 text-sm font-medium text-white"
             >
               <CartIcon className="size-4 text-white" />
-              Thêm vào giỏ
+              {added ? "Đã thêm vào giỏ" : "Thêm vào giỏ"}
             </button>
 
             <a href={`/products/${product.slug}`} className="mt-3 text-sm text-foreground underline">
@@ -112,4 +146,10 @@ export function QuickViewModal({
       </div>
     </>
   );
+}
+
+export function QuickViewModal() {
+  const { product, close } = useQuickView();
+  if (!product) return null;
+  return <QuickViewModalContent key={product.slug} product={product} onClose={close} />;
 }

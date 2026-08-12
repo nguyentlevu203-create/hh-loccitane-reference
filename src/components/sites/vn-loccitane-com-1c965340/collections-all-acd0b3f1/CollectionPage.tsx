@@ -29,6 +29,7 @@ export function CollectionPage({
   products,
   total,
   showToolbar = true,
+  emptyMessage,
 }: {
   title: string;
   breadcrumb: { label: string; href: string }[];
@@ -38,6 +39,7 @@ export function CollectionPage({
   products: Product[];
   total: number;
   showToolbar?: boolean;
+  emptyMessage?: string;
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);
@@ -58,6 +60,7 @@ export function CollectionPage({
           products={products}
           total={total}
           showToolbar={showToolbar}
+          emptyMessage={emptyMessage}
           onOpenFilter={() => setFilterOpen(true)}
         />
       </main>

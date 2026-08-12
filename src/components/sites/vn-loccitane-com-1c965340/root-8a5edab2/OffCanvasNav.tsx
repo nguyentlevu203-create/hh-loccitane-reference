@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { CloseNavIcon, SearchIcon, ArrowDownIcon } from "@/components/sites/vn-loccitane-com-1c965340/shared/icons";
+import { useSearchOverlay } from "@/lib/commerce/SearchContext";
 
 interface OffCanvasNavProps {
   open: boolean;
@@ -118,6 +120,12 @@ function ExpandableRow({
 
 export function OffCanvasNav({ open, onClose }: OffCanvasNavProps) {
   const [openKeys, setOpenKeys] = useState<Set<string>>(new Set());
+  const searchOverlay = useSearchOverlay();
+
+  const openSearch = () => {
+    onClose();
+    searchOverlay.open();
+  };
 
   const toggleKey = (key: string) => {
     setOpenKeys((prev) => {
@@ -154,20 +162,32 @@ export function OffCanvasNav({ open, onClose }: OffCanvasNavProps) {
           <button type="button" onClick={onClose} aria-label="Đóng menu">
             <CloseNavIcon className="h-6 w-6" />
           </button>
-          <button type="button" aria-label="Tìm kiếm">
+          <button type="button" onClick={openSearch} aria-label="Tìm kiếm">
             <SearchIcon className="h-4 w-4" />
           </button>
         </div>
 
         <nav className="px-6">
           <ul>
-            {primaryLinks.map((link) => (
-              <li key={link.key} className="border-b border-[#ece3d6]">
-                <a href="#" className="flex h-12 items-center text-[15px]">
-                  {link.label}
-                </a>
-              </li>
-            ))}
+            {primaryLinks.map((link) =>
+              link.key === "favorites" ? (
+                <li key={link.key} className="border-b border-[#ece3d6]">
+                  <Link
+                    href="/wishlist"
+                    onClick={onClose}
+                    className="flex h-12 items-center text-[15px]"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ) : (
+                <li key={link.key} className="border-b border-[#ece3d6]">
+                  <a href="#" className="flex h-12 items-center text-[15px]">
+                    {link.label}
+                  </a>
+                </li>
+              ),
+            )}
             {expandableItems.map((item) => (
               <ExpandableRow
                 key={item.key}
@@ -189,16 +209,28 @@ export function OffCanvasNav({ open, onClose }: OffCanvasNavProps) {
           </ul>
 
           <ul className="border-t border-[#ece3d6] py-2">
-            {secondaryLinks.map((label) => (
-              <li key={label}>
-                <a
-                  href="#"
-                  className="block py-2 text-sm text-muted-foreground"
-                >
-                  {label}
-                </a>
-              </li>
-            ))}
+            {secondaryLinks.map((label) =>
+              label === "Tìm kiếm" ? (
+                <li key={label}>
+                  <button
+                    type="button"
+                    onClick={openSearch}
+                    className="block py-2 text-left text-sm text-muted-foreground"
+                  >
+                    {label}
+                  </button>
+                </li>
+              ) : (
+                <li key={label}>
+                  <a
+                    href="#"
+                    className="block py-2 text-sm text-muted-foreground"
+                  >
+                    {label}
+                  </a>
+                </li>
+              ),
+            )}
           </ul>
 
           <ul className="border-t border-[#ece3d6] pb-6">
